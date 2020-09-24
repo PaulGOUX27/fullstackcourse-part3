@@ -5,7 +5,7 @@ if (process.argv.length < 3) {
     process.exit(1);
 }
 
-if(process.argv.length !== 3 && process.argv.length !== 5){
+if (process.argv.length !== 3 && process.argv.length !== 5) {
     console.log('Please provide the password, name and number as arguments: node mongo.js <password> <name> <number>');
     process.exit(1);
 }
@@ -15,7 +15,7 @@ const password = process.argv[2]
 const url = `mongodb+srv://phonebook:${password}@cluster0.wyc48.mongodb.net/phonebook-app?retryWrites=true&w=majority`
 
 mongoose.connect(
-    url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }
+    url, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true}
 )
 
 const personSchema = new mongoose.Schema({
