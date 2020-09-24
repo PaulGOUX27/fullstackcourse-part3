@@ -82,37 +82,15 @@ app.post('/api/persons', (req, res, next) => {
         })
     }
 
-    if (!body.number) {
-        return res.status(400).json({
-            error: 'number missing'
-        })
-    }
+    const person = new Person({
+        ...body,
+    })
 
-    if (!body.name) {
-        return res.status(400).json({
-            error: 'name missing'
+    person.save()
+        .then(savedPerson => {
+            res.json(savedPerson)
         })
-    }
-
-    Person.find({name: body.name})
-        .then(personsFind => {
-            if (personsFind.length > 0) {
-                return res.status(400).json({
-                    error: 'name already exist'
-                })
-            } else {
-                const person = new Person({
-                    ...body,
-                })
-
-                person.save()
-                    .then(savedPerson => {
-                        res.json(savedPerson)
-                    })
-                    .catch(error => next(error))
-            }
-        })
-        .catch(error => next(error));
+        .catch(error => next(error))
 })
 
 // Middleware
@@ -124,10 +102,14 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
-    console.error(error.message)
+    console.error(error.name, " ----- ", error.message)
 
     if (error.name === 'CastError') {
         return response.status(400).send({error: 'malformatted id'})
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+    } else if (error.name === 'MongoError'){
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
